@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout::head">
+    <meta charset="UTF-8">
+    <title>List customer</title>
+</head>
+<body>
+<h1 align="center">Product Manager</h1>
+<a href="/create">Add new Product</a><br>
+<a href="/get5Latest">get 5 latest products</a><br>
+<a href="/getTop5expensive">get 5 the most expensive products</a><br>
+
+<table class="table table-striped" width="50">
+    <tr>
+        <form method="post" action="/findByName">
+            <td><input name="name"></td>
+            <td>
+                <button type="submit">Search By Name</button>
+            </td>
+        </form>
+        <form action="/findByCategory" method="post" th:object="${category}">
+            <td>
+                <select th:field="*{id}">
+                    <option th:each="c : ${categoryList}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+            </td>
+            <td>
+                <button type="submit">Find by category</button>
+            </td>
+        </form>
+    </tr>
+</table>
+
+
+<table class="table table-striped">
+    <tr>
+        <td>Name</td>
+        <td>Price</td>
+        <td>Description</td>
+        <td>Quantity</td>
+        <td>Date</td>
+        <td>Category</td>
+        <td>Total Money Remain</td>
+        <td>Update</td>
+        <td>Delete</td>
+    </tr>
+<!--    <tr><h3  th:if="${productList}" >Nothing matched</h3>-->
+    </tr>
+    <tr th:each=" c: ${productList}">
+        <td th:text="${c.name}"></td>
+        <td th:text="${c.price}"></td>
+        <td th:text="${c.description}"></td>
+        <td th:text="${c.quantity}"></td>
+        <td th:text="${c.dateTime}"></td>
+        <td th:text="${c.category.name}"></td>
+        <td th:text="${c.price*c.quantity}"></td>
+        <td><a th:href="@{/update/{id}(id=${c.id})}">Update</a></td>
+        <td><a th:href="@{/delete/{id}(id=${c.id})}">Delete</a></td>
+    </tr>
+    <tr>
+        <td colspan="6">Total in WareHouse</td>
+        <td th:text="${totalMoney}"></td></tr>
+</table>
+<!--//phan trang-->
+<div>
+    <a th:href="@{'/list'(page=${productList.number - 1})}" th:if="${productList.hasPrevious()}">Previous</a>
+    <span th:text="${productList.number + 1}"></span>/<span th:text="${productList.totalPages}"></span>
+    <a th:href="@{'/list'(page=${productList.number + 1})}" th:if="${productList.hasNext()}">Next</a>
+</div>
+</body>
+</html>
